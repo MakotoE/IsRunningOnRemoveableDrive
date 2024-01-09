@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <iostream>
+#include <filesystem>
 
 std::wstring_view getDriveTypeName(UINT driveType) {
 	switch (driveType) {
@@ -23,12 +24,11 @@ std::wstring_view getDriveTypeName(UINT driveType) {
 }
 
 int main() {
-	WCHAR path[MAX_PATH];
-	GetModuleFileName(NULL, path, static_cast<DWORD>(std::size(path)));
+	std::vector<std::wstring> pathsToTest{ L"", L"A:\\", L"C:\\", L"E:\\"};
 
-	std::wcout << L"Module path: " << path << std::endl;
-
-	auto driveType = GetDriveType(path);
-
-	std::wcout << L"Drive type: " << getDriveTypeName(driveType) << std::endl;
+	for (auto& path : pathsToTest) {
+		std::wcout << L"Path: " << path << std::endl;
+		auto driveType = GetDriveType(path.c_str());
+		std::wcout << L"Drive type: " << getDriveTypeName(driveType) << std::endl;
+	}
 }
